@@ -25,5 +25,17 @@ resource "google_compute_instance" "wordpress-server" {
     email = var.service_account
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
-  tags = ["http-server", "https-server"]
+  tags = ["http-server"]
+}
+# VPC Firewall
+resource "google_compute_firewall" "wp-fw" {
+  project     = var.project_id
+  name        = "wp-fw"
+  network     = "default"
+  description = "HTTP Firewall rule for exposing server."
+  allow {
+    protocol  = "tcp"
+    ports     = ["80", "8080"]
+  }
+  target_tags = ["http-server"]
 }
